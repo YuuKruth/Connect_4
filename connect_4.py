@@ -64,16 +64,18 @@ turn = 0
 while not game_over:
     # Ask Player 1 to input
     if turn == 0:
-        try: #exit loop if player types nothing
-            col = int(input("Player 1 Make your selection (0-" + str(COLUMN_COUNT - 1) + "): "), 10)
-            
-            if col != range(COLUMN_COUNT):
-                print("ERROR INPUT -> Input has to be between 0 and " + str(COLUMN_COUNT - 1))
+
+        col = 0
+        while True:
+            col_test = int(input("Player 2 Make your selection (0-" + str(COLUMN_COUNT - 1) + "): "), 10)
+
+            if col_test == range(COLUMN_COUNT):
+                col = int(col_test)
                 break
-        
-        except ValueError:
-            print("ERROR INPUT -> Input has to be a number between 0 and " + str(COLUMN_COUNT - 1))
-            break
+                
+            else:
+                print("ERROR INPUT -> Input has to be between 0 and " + str(COLUMN_COUNT - 1)))
+                print("please try again:") 
 
 
         if is_valid_location(board, col):
