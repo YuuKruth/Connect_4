@@ -63,18 +63,18 @@ def draw_board(board):
             #pygame.draw.rect(Surface, color, Rect, width = 0)
             pg.draw.rect(screen, BLUE, (c * SQUARESIZE, r * SQUARESIZE + SQUARESIZE, SQUARESIZE, SQUARESIZE))
             #pygame.draw.circle(Surface, color, pos, radius, width = 0)
-            pg.draw.circle(screen, BLACK, (c * SQUARESIZE + RADIUS, r * SQUARESIZE + SQUARESIZE + RADIUS), RADIUS - 5)
+            pg.draw.circle(screen, BLACK, (c * SQUARESIZE + int(SQUARESIZE / 2), r * SQUARESIZE + SQUARESIZE + int(SQUARESIZE / 2)), RADIUS)
     
     #chanage color of pieces (cirles)
     for c in range(COLUMN_COUNT):
         for r in range(ROW_COUNT):
             if board[r][c] == 1: #case player 1 sets a red piece
                 #pygame.draw.circle(Surface, color, center, radius, width)
-                pg.draw.circle(screen, RED, (c * SQUARESIZE + RADIUS, height - (r * SQUARESIZE +  RADIUS)), RADIUS - 5)
+                pg.draw.circle(screen, RED, (c * SQUARESIZE + int(SQUARESIZE / 2), height - (r * SQUARESIZE +  int(SQUARESIZE / 2))), RADIUS)
             
             elif board[r][c] == 2: #case player 2 sets a yellow piece
                 #pygame.draw.circle(Surface, color, center, radius, width)
-                pg.draw.circle(screen, YELLOW, (c * SQUARESIZE + RADIUS, height - (r * SQUARESIZE  + RADIUS)), RADIUS - 5)        
+                pg.draw.circle(screen, YELLOW, (c * SQUARESIZE + int(SQUARESIZE / 2), height - (r * SQUARESIZE  + int(SQUARESIZE / 2))), RADIUS)        
 
     pg.display.update()
 
@@ -101,6 +101,8 @@ height = ROW_COUNT * SQUARESIZE + SQUARESIZE
 size = (width, height)
 screen = pg.display.set_mode(size)
 
+myfont = pg.font.SysFont("monospace", 75)
+
  #Rectangular
 BLUE = (30, 144, 255)
 
@@ -108,7 +110,7 @@ BLUE = (30, 144, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 YELLOW = (255, 255, 0)
-RADIUS = int(SQUARESIZE/2) #RADIUS-5 for no merging circles
+RADIUS = int(SQUARESIZE / 2 - 5)
 
 
 
@@ -121,7 +123,17 @@ while not game_over:
         if event.type == pg.QUIT:
             sys.exit()
 
+        if event.type == pg.MOUSEMOTION:
+            pg.draw.rect(screen, BLACK, (0, 0, width, SQUARESIZE))
+            posx = event.pos[0]
+            if turn == 0:
+                pg.draw.circle(screen, RED, (posx, int(SQUARESIZE / 2)), RADIUS)
+            else:
+                pg.draw.circle(screen, YELLOW, (posx, int(SQUARESIZE / 2)), RADIUS)
+        pg.display.update()        
+
         if event.type == pg.MOUSEBUTTONDOWN: 
+            pg.draw.rect(screen, BLACK, (0, 0, width, SQUARESIZE))
             # Ask Player 1 to input
             if turn == 0:
             
@@ -133,7 +145,8 @@ while not game_over:
                     drop_piece(board, row, col, 1)
 
                     if winning_check(board, 1):
-                        print("PLAYER 1 Wins!")
+                        label = myfont.render("PLAYER 1 Wins!", 1, RED)
+                        screen.blit(label, (40,10))
                         game_over = True
 
          
@@ -151,7 +164,8 @@ while not game_over:
                     drop_piece(board, row, col, 2)
 
                     if winning_check(board, 2):
-                        print("PLAYER 2 Wins!")    
+                        label = myfont.render("PLAYER 2 Wins!", 1, YELLOW)
+                        screen.blit(label, (40,10))
                         game_over = True
 
             print_board(board) # for checking and maintenance
@@ -159,3 +173,6 @@ while not game_over:
 
             turn += 1
             turn = turn % 2
+
+            if game_over:
+                pg.time.wait(3000)
