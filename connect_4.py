@@ -3,16 +3,6 @@ import numpy as np
 import pygame as pg
 import sys
 import math
-import os
-
-def resource_path(relative_path):
-    try:
-    # PyInstaller creates a temp folder and stores path in _MEIPASS
-        base_path = sys._MEIPASS
-    except Exception:
-        base_path = os.path.abspath(".")
-
-    return os.path.join(base_path, relative_path)
 
 #TODO: fix Hardcode; custom size of board but it have to be at least 6 rows and 7 columns big; this fix is effecting to other todo  
 ROW_COUNT = 6
@@ -91,7 +81,7 @@ def draw_board(board):
 
 #Play_algorithm
 board = create_board()
-print_board(board)
+#print_board(board)
 game_over = False
 turn = 0
 
@@ -178,7 +168,7 @@ while not game_over:
                         screen.blit(label, (40,10))
                         game_over = True
 
-            print_board(board) # for checking and maintenance
+            #print_board(board) # for checking and maintenance
             draw_board(board)       
 
             turn += 1
