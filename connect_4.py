@@ -1,6 +1,8 @@
+import math
 import numpy as np
 import pygame as pg
 import sys
+import math
 
 #TODO: fix Hardcode; custom size of board but it have to be at least 6 rows and 7 columns big; this fix is effecting to other todo  
 ROW_COUNT = 6
@@ -62,6 +64,20 @@ def draw_board(board):
             pg.draw.rect(screen, BLUE, (c * SQUARESIZE, r * SQUARESIZE + SQUARESIZE, SQUARESIZE, SQUARESIZE))
             #pygame.draw.circle(Surface, color, pos, radius, width = 0)
             pg.draw.circle(screen, BLACK, (c * SQUARESIZE + RADIUS, r * SQUARESIZE + SQUARESIZE + RADIUS), RADIUS - 5)
+    
+    #chanage color of pieces (cirles)
+    for c in range(COLUMN_COUNT):
+        for r in range(ROW_COUNT):
+            if board[r][c] == 1: #case player 1 sets a red piece
+                #pygame.draw.circle(Surface, color, center, radius, width)
+                pg.draw.circle(screen, RED, (c * SQUARESIZE + RADIUS, height - (r * SQUARESIZE +  RADIUS)), RADIUS - 5)
+            
+            elif board[r][c] == 2: #case player 2 sets a yellow piece
+                #pygame.draw.circle(Surface, color, center, radius, width)
+                pg.draw.circle(screen, YELLOW, (c * SQUARESIZE + RADIUS, height - (r * SQUARESIZE  + RADIUS)), RADIUS - 5)        
+
+    pg.display.update()
+
 
 #Play_algorithm
 board = create_board()
@@ -78,6 +94,7 @@ pg.display.set_icon(Icon)
 
  #pygame board 
 SQUARESIZE = 100
+
 width = COLUMN_COUNT * SQUARESIZE
 height = ROW_COUNT * SQUARESIZE + SQUARESIZE
 
@@ -89,6 +106,8 @@ BLUE = (30, 144, 255)
 
  #Circle
 BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+YELLOW = (255, 255, 0)
 RADIUS = int(SQUARESIZE/2) #RADIUS-5 for no merging circles
 
 
@@ -103,75 +122,40 @@ while not game_over:
             sys.exit()
 
         if event.type == pg.MOUSEBUTTONDOWN: 
-            continue 
             # Ask Player 1 to input
-            # if turn == 0:
-            #     #making sure that all inputs are correct
-            #     while True:
+            if turn == 0:
             
-            #         try:
-            #             col_test = int(input("Player 1 Make your selection (0-" + str(COLUMN_COUNT - 1) + "): "), 10)
-                
-            #             if 0 <= col_test and col_test < COLUMN_COUNT:
-                    
-            #                 col = int(col_test)
-            #                 break
-                
-            #             else:
-            #                 print("ERROR INPUT -> Input has to be between 0 and " + str(COLUMN_COUNT - 1))
-            #                 print("please try again:")
+                posx = event.pos[0]
+                col  = int(math.floor(posx / SQUARESIZE))
 
-            #         except ValueError:
-            #             print("ValueError  --> Input has to be numeric! (positive integer)")
-            #             print("ERROR INPUT --> Input has to be between 0 and " + str(COLUMN_COUNT - 1))
-            #             print("please try again:")
-            #             pass
+                if is_valid_location(board, col):
+                    row = get_next_open_row(board, col)
+                    drop_piece(board, row, col, 1)
 
-
-            #     if is_valid_location(board, col):
-            #         row = get_next_open_row(board, col)
-            #         drop_piece(board, row, col, 1)
-
-            #         if winning_check(board, 1):
-            #             print("PLAYER 1 Wins!")
-            #             game_over = True
+                    if winning_check(board, 1):
+                        print("PLAYER 1 Wins!")
+                        game_over = True
 
          
 
-            # # Ask Player 2 to input
-            # else:
+            # Ask Player 2 to input
+            else:
 
-            #     #making sure that all inputs are correct
-            #     while True:
-            
-            #         try:
-            #             col_test = int(input("Player 2 Make your selection (0-" + str(COLUMN_COUNT - 1) + "): "), 10)
-
-            #             if 0 <= col_test and col_test < COLUMN_COUNT:
-            #                 col = int(col_test)
-            #                 false_input_count = 0
-            #                 break
-                
-            #             else:
-            #                 print("ERROR INPUT -> Input has to be between 0 and " + str(COLUMN_COUNT - 1))
-            #                 print("please try again:")
-
-            #         except ValueError:
-            #             print("ValueError")
-            #             print("ERROR INPUT -> Input has to be between 0 and " + str(COLUMN_COUNT - 1))
-            #             print("please try again:")
-            #             pass
+                posx = event.pos[0]
+                col  = int(math.floor(posx / SQUARESIZE))
+                    
 
 
-            #     if is_valid_location(board, col):
-            #         row = get_next_open_row(board, col)
-            #         drop_piece(board, row, col, 2)
+                if is_valid_location(board, col):
+                    row = get_next_open_row(board, col)
+                    drop_piece(board, row, col, 2)
 
-            #         if winning_check(board, 2):
-            #             print("PLAYER 2 Wins!")    
-            #             game_over = True
+                    if winning_check(board, 2):
+                        print("PLAYER 2 Wins!")    
+                        game_over = True
 
-            # print_board(board)        
+            print_board(board) # for checking and maintenance
+            draw_board(board)       
 
-            # turn += 1
-            # turn = turn % 2
+            turn += 1
+            turn = turn % 2
